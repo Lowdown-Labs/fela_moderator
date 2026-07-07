@@ -1,0 +1,72 @@
+name: sync-model-from-hf
+
+# Pulls the latest on-device artifacts that fela_convertor uploaded to the HF model repo
+# (lowdown-labs/FELA-moderator/ondevice/) into this SDK, commits them (Git LFS), and bumps the patch
+# version + tags. Fires instantly when fela_convertor finishes (repository_dispatch), with a poll and a
+# manual trigger as fallbacks. Idempotent: no-ops when the bundled model already matches HF.
+on:
+  repository_dispatch:
+    types: [model-updated]
+  workflow_dispatch:
+  schedule:
+    - cron: "30 */6 * * *"     # 30 min after the convertor's poll
+
+concurrency:
+  group: sync-model
+  cancel-in-progress: false
+
+env:
+  HF_MODEL_REPO: lowdown-labs/FELA-moderator
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write            # commit + tag back to this repo (uses GITHUB_TOKEN)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "huggingface-hub>=0.34"
+
+      - name: Fetch latest ondevice artifacts from HF
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}       # read access to the (private) model repo
+        run: |
+          python - <<'PY'
+          import os, shutil
+          from huggingface_hub import hf_hub_download
+          repo, tok = os.environ["HF_MODEL_REPO"], os.environ.get("HF_TOKEN")
+          want = [
+              ("ondevice/moderator_int8.tflite", "model/moderator_int8.tflite"),
+              ("ondevice/moderator.onnx",        "model/moderator.onnx"),
+              ("config.json",                    "config.json"),
+          ]
+          for src, dst in want:
+              try:
+                  p = hf_hub_download(repo, src, token=tok)
+                  os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
+                  shutil.copyfile(p, dst)
+                  print("fetched", dst, f"({os.path.getsize(dst)/1e6:.1f} MB)")
+              except Exception as e:
+                  print("skip", src, "->", str(e)[:120])
+          PY
+
+      - name: Commit if the model changed, bump version + tag
+        run: |
+          git config user.name "fela-bot"
+          git config user.email "ci@lowdown-labs.example"
+          if [ -z "$(git status --porcelain model config.json)" ]; then
+            echo "on-device model already up to date — nothing to sync."
+            exit 0
+          fi
+          NEW=$(node -p "const p=require('./package.json');const [a,b,c]=p.version.split('.');\`\${a}.\${b}.\${Number(c)+1}\`")
+          node -e "const fs=require('fs');const p=require('./package.json');p.version='$NEW';fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n')"
+          git add -A
+          git commit -m "ci: sync on-device model from HF (v$NEW)"
+          git tag "v$NEW"
+          git push origin HEAD --tags
+          echo "synced + released v$NEW"

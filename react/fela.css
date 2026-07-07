@@ -1,0 +1,12 @@
+.fela-root { --fela-block: #b3261e; --fela-warn: #f59e0b; --fela-radius: 8px; --fela-font: inherit; display: block; }
+.fela-field { position: relative; }
+.fela-backdrop, .fela-input { font: var(--fela-font); padding: .5rem; white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; width: 100%; min-height: 5rem; border-radius: var(--fela-radius); }
+.fela-input { display: block; }
+.fela-field .fela-input { position: relative; background: transparent; }
+.fela-input[data-blocked="true"] { outline: 2px solid var(--fela-block); }
+.fela-backdrop { position: absolute; inset: 0; color: transparent; pointer-events: none; overflow: hidden; }
+.fela-backdrop mark { background: color-mix(in srgb, var(--fela-block) 22%, transparent); border-radius: 3px; color: transparent; }
+.fela-backdrop mark[data-severity="warn"] { background: color-mix(in srgb, var(--fela-warn) 28%, transparent); }
+.fela-banner { margin: .25rem 0 0; }
+.fela-banner[data-severity="block"] { color: var(--fela-block); }
+.fela-banner[data-severity="warn"] { color: var(--fela-warn); }

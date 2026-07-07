@@ -1,0 +1,52 @@
+{
+  "name": "@lowdown/moderate",
+  "version": "0.1.0",
+  "description": "On-device submit-time content gate: block PII or obscenity before it reaches your backend. Byte-level, 13 MB, offline.",
+  "type": "module",
+  "private": true,
+  "license": "SEE LICENSE IN ./LICENSE",
+  "scripts": {
+    "test": "node reference/validate.test.mjs && vitest run"
+  },
+  "bin": { "moderate": "./bin/moderate.mjs" },
+  "exports": {
+    ".": "./reference/validate.mjs",
+    "./gate": "./reference/validate.mjs",
+    "./moderate": "./reference/moderate.mjs",
+    "./checkers": "./reference/checkers.mjs",
+    "./model/runner.mjs": "./model/runner.mjs",
+    "./react": "./react/index.ts",
+    "./web": "./web/fela-moderated-input.js",
+    "./config.json": "./config.json"
+  },
+  "files": [
+    "reference/*.mjs",
+    "reference/*.d.ts",
+    "model/runner.mjs",
+    "react/**",
+    "web/*.js",
+    "bin/**",
+    "config.json",
+    "SPEC.md",
+    "README.md"
+  ],
+  "keywords": ["moderation", "pii", "toxicity", "on-device", "offline", "byte-level", "react-native", "gate"],
+  "sideEffects": ["./web/fela-moderated-input.js"],
+  "peerDependenciesMeta": {
+    "onnxruntime-web": { "optional": true },
+    "onnxruntime-node": { "optional": true },
+    "onnxruntime-react-native": { "optional": true }
+  },
+  "devDependencies": {
+    "onnxruntime-node": "^1.27.0",
+    "vitest": "^2.1.0",
+    "jsdom": "^25.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.5.0",
+    "typescript": "^5.6.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "@types/react": "^18.3.0"
+  }
+}

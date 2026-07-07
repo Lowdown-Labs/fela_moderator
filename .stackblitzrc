@@ -1,0 +1,4 @@
+{
+  "installDependencies": false,
+  "startCommand": "cd demo/chat && npm install && npm run dev"
+}
