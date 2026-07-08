@@ -1,6 +1,6 @@
 // The two-knob submit-time gate: FOSS structured-PII + (optional) neural toxicity/unstructured PII
 // -> a stable Finding[] plus blocked/warned booleans. Control is two dials; detection stays granular.
-import { MODEL_OWNED, structuredPII } from "./checkers.mjs";
+import { moderate } from "./engine.mjs";
 
 /** @typedef {"block"|"warn"|"off"} Severity */
 /** @typedef {{ pii: Severity, toxicity: Severity }} Policy */
@@ -35,30 +35,28 @@ export function redactText(text, findings) {
  */
 export function check(text, { neural = null, policy = DEFAULT_POLICY } = {}) {
   const pol = { ...DEFAULT_POLICY, ...policy };
-  const findings = [];
-
-  const addPII = (f, source) => {
-    const finding = { category: "pii", severity: pol.pii, source, ...f };
-    finding.suggestion = maskValue(finding);
-    findings.push(finding);
-  };
-
-  // structured PII (regex owns email/phone/SSN/card/IP/IBAN/URL)
-  for (const p of structuredPII(text)) addPII({ type: p.type, text: p.text, start: p.start, end: p.end }, "regex");
-
-  // unstructured PII from the model (names/addresses); structured model entities dropped (regex owns them)
-  for (const p of neural?.pii || []) {
-    if (!MODEL_OWNED.has(p.entity)) continue;
-    addPII({ type: p.entity, text: p.text, start: p.utf16Start, end: p.utf16End }, "model");
-  }
-
-  // toxicity: one finding per flagged label, no span
-  for (const [label, v] of Object.entries(neural?.toxicity || {})) {
-    if (!v.flagged) continue;
-    findings.push({ category: "toxicity", type: label, severity: pol.toxicity, text: "", start: -1, end: -1, source: "model" });
-  }
-
+  const result = moderate(text, { neural });
+  const piiKey = new Set(result.piiSpans.map((p) => `${p.entity}|${p.span[0]}|${p.span[1]}`));
+  const findings = result.reasons.map((r) => {
+    const isPII = r.span ? piiKey.has(`${r.label}|${r.span[0]}|${r.span[1]}`) : false;
+    const category = isPII ? "pii" : "toxicity";
+    const finding = {
+      category,
+      type: r.label,
+      severity: category === "pii" ? pol.pii : pol.toxicity,
+      text: r.matched || "",
+      start: r.span ? r.span[0] : -1,
+      end: r.span ? r.span[1] : -1,
+      source: r.source === "model" ? "model" : "regex",
+    };
+    if (isPII) finding.suggestion = maskValue(finding);
+    return finding;
+  });
   const blocked = findings.some((f) => f.severity === "block");
   const warned = findings.some((f) => f.severity === "warn");
   return { findings, blocked, warned };
 }
+
+export { moderate, moderateAsync } from "./engine.mjs";
+export { explain, explainReason } from "./explain.mjs";
+export { moderationSchema, zodRefine } from "./schema.mjs";

@@ -81,17 +81,20 @@ name collision. The main entry (`.` → `reference/validate.mjs`) re-exports `mo
 optional lowercasing. This defeats compat/confusable obfuscation (fullwidth, circled, math-alphanumeric,
 Cyrillic/Greek look-alikes).
 
-**Offset map** is built **code-point by code-point**: iterate the original by code point; normalize each
-code point individually to a (possibly multi-unit) chunk; for every resulting normalized UTF-16 unit,
-record the source original `[start, end)` range. The map exposes:
+**Offset map** is built **cluster by cluster**: iterate the original in clusters of a base char plus its
+trailing combining marks (`/\P{M}\p{M}*|\p{M}+/gu`); normalize each cluster to a (possibly multi-unit)
+chunk; for every resulting normalized UTF-16 unit, record the source original `[start, end)` range. The
+map exposes:
 
 - `map.toOriginal(nStart, nEnd) -> [origStart, origEnd]` — maps a span in **normalized** coords back to
   **original** coords, always covering **whole original characters** (min start / max end over covered
   units). Mirrors the existing `charBoundsByByte` technique in `reference/moderate.mjs`.
 
-**Why this shape:** rejected diff-based alignment as overkill. Documented limitation: cross-boundary
-combining-mark sequences (rare) aren't perfectly aligned; all obfuscation cases in scope are
-per-code-point transforms, so they map exactly.
+**Why clusters (not per code point):** NFKC composition is context-dependent across a base char and its
+combining marks, so decomposed/NFD input (e.g. `e`+U+0301 → `é`; common from macOS input/paste and a
+deliberate combining-mark evasion) must be normalized as a unit. Clustering base+marks composes correctly
+while keeping the offset map exact; the composed char's normalized units map to the whole original
+cluster span. Rejected diff-based alignment as overkill.
 
 Every detector — and every span produced anywhere — passes through `map.toOriginal` before it reaches a
 `Reason`, guaranteeing deliverable (b): spans point into the original text.
