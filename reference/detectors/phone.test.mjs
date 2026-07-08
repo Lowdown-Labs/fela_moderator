@@ -2,7 +2,12 @@
 import { detect } from "./phone.mjs";
 
 let fails = 0;
-const ok = (c, m) => { if (!c) { console.error("FAIL " + m); fails++; } else console.log("ok   " + m); };
+const ok = (c, m) => {
+  if (!c) {
+    console.error("FAIL " + m);
+    fails++;
+  } else console.log("ok   " + m);
+};
 
 const t = "call me at 415-555-2671 tomorrow";
 const fs = detect(t);

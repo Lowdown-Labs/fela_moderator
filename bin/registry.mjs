@@ -5,12 +5,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 export const components = {
-  "moderated-textarea": [
-    "react/ModeratedTextarea.tsx",
-    "react/useModeration.ts",
-    "react/types.ts",
-    "react/fela.css",
-  ],
+  "moderated-textarea": ["react/ModeratedTextarea.tsx", "react/useModeration.ts", "react/types.ts", "react/fela.css"],
 };
 
 /** Copy a component's files into destDir, rewriting the core import to the package name. */
@@ -22,7 +17,10 @@ export function ejectComponent(name, destDir) {
     const dest = join(destDir, basename(rel));
     cpSync(join(ROOT, rel), dest);
     if (dest.endsWith(".ts") || dest.endsWith(".tsx")) {
-      const rewritten = readFileSync(dest, "utf8").replace(/["']\.\.\/reference\/validate\.mjs["']/g, '"@lowdown/moderate"');
+      const rewritten = readFileSync(dest, "utf8").replace(
+        /["']\.\.\/reference\/validate\.mjs["']/g,
+        '"@lowdown/moderate"',
+      );
       writeFileSync(dest, rewritten);
     }
   }

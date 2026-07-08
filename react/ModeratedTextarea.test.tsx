@@ -15,7 +15,8 @@ describe("<ModeratedTextarea>", () => {
   });
 
   it("fires onBlocked then onClean across transitions", async () => {
-    const onBlocked = vi.fn(), onClean = vi.fn();
+    const onBlocked = vi.fn(),
+      onClean = vi.fn();
     render(<ModeratedTextarea debounceMs={0} onBlocked={onBlocked} onClean={onClean} />);
     type("joe@example.com");
     await waitFor(() => expect(onBlocked).toHaveBeenCalledTimes(1));
@@ -64,7 +65,11 @@ describe("<ModeratedTextarea>", () => {
     render(<ModeratedTextarea ref={ref} debounceMs={0} onFlagged={async () => "redact"} />);
     type("call 415-555-0199 now");
     await waitFor(() => expect(screen.getByRole("textbox")).toHaveAttribute("data-blocked", "true"));
-    await act(async () => { await ref.current!.guardSubmit(); });
-    await waitFor(() => expect((screen.getByRole("textbox") as HTMLTextAreaElement).value).not.toContain("415-555-0199"));
+    await act(async () => {
+      await ref.current!.guardSubmit();
+    });
+    await waitFor(() =>
+      expect((screen.getByRole("textbox") as HTMLTextAreaElement).value).not.toContain("415-555-0199"),
+    );
   });
 });

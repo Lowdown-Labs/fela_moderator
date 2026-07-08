@@ -2,7 +2,12 @@
 import { detect } from "./ipaddr.mjs";
 
 let fails = 0;
-const ok = (c, m) => { if (!c) { console.error("FAIL " + m); fails++; } else console.log("ok   " + m); };
+const ok = (c, m) => {
+  if (!c) {
+    console.error("FAIL " + m);
+    fails++;
+  } else console.log("ok   " + m);
+};
 
 const t = "server 192.168.0.1 and 2001:db8::1 here";
 const fs = detect(t);

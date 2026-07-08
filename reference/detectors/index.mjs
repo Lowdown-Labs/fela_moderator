@@ -28,8 +28,12 @@ export function detect(text, { map, enabled, detectorOpts = {}, onError } = {}) 
   for (const d of DETECTORS) {
     if (enabled && enabled[d.name] === false) continue;
     let flags;
-    try { flags = d.detect(text, detectorOpts[d.name]); }
-    catch (e) { onError?.(e, d.name); continue; }
+    try {
+      flags = d.detect(text, detectorOpts[d.name]);
+    } catch (e) {
+      onError?.(e, d.name);
+      continue;
+    }
     for (const f of flags) {
       const span = map ? map.toOriginal(f.span[0], f.span[1]) : f.span;
       out.push({ ...f, span });

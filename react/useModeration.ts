@@ -23,11 +23,21 @@ export function useModeration(text: string, opts: UseModerationOptions = {}) {
   // Depend on policy.* (not the object) so inline `{pii,toxicity}` literals don't loop the effect.
   useEffect(() => {
     clearTimeout(timer.current);
-    if (!text.trim()) { setGate(EMPTY); setPending(false); return; }
+    if (!text.trim()) {
+      setGate(EMPTY);
+      setPending(false);
+      return;
+    }
     setPending(true);
     timer.current = setTimeout(async () => {
       let n: unknown = null;
-      if (neural) { try { n = await neural(text); } catch (e) { onError?.(e); } }
+      if (neural) {
+        try {
+          n = await neural(text);
+        } catch (e) {
+          onError?.(e);
+        }
+      }
       if (latest.current !== text) return; // stale response, a newer keystroke won
       setGate(check(text, { neural: n, policy }));
       setPending(false);
@@ -41,17 +51,32 @@ export function useModeration(text: string, opts: UseModerationOptions = {}) {
   const guardSubmit = useCallback(async (): Promise<Decision> => {
     if (!gate.blocked && !gate.warned) return "send";
     if (onFlagged) {
-      try { return await onFlagged(gate.findings); }
-      catch (e) { onError?.(e); return "block"; }
+      try {
+        return await onFlagged(gate.findings);
+      } catch (e) {
+        onError?.(e);
+        return "block";
+      }
     }
     return gate.blocked ? "block" : "send";
   }, [gate, onFlagged, onError]);
 
-  const getInputProps = useCallback(() => ({
-    "aria-invalid": gate.blocked,
-    "data-blocked": gate.blocked,
-    "data-warned": gate.warned,
-  }), [gate]);
+  const getInputProps = useCallback(
+    () => ({
+      "aria-invalid": gate.blocked,
+      "data-blocked": gate.blocked,
+      "data-warned": gate.warned,
+    }),
+    [gate],
+  );
 
-  return { findings: gate.findings, blocked: gate.blocked, warned: gate.warned, pending, redact, guardSubmit, getInputProps };
+  return {
+    findings: gate.findings,
+    blocked: gate.blocked,
+    warned: gate.warned,
+    pending,
+    redact,
+    guardSubmit,
+    getInputProps,
+  };
 }

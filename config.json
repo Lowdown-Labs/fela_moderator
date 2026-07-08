@@ -32,14 +32,7 @@
     "violence",
     "violence_graphic"
   ],
-  "jigsaw_labels": [
-    "toxic",
-    "severe_toxic",
-    "obscene",
-    "threat",
-    "insult",
-    "identity_hate"
-  ],
+  "jigsaw_labels": ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"],
   "pii_entity_types": [
     "ACCOUNTNAME",
     "ACCOUNTNUMBER",
@@ -221,9 +214,6 @@
     "insult": 0.8721,
     "identity_hate": 0.9185
   },
-  "input_shape": [
-    1,
-    512
-  ],
+  "input_shape": [1, 512],
   "input_desc": "one UTF-8 text string, byte tokenized to [CLS] b0 b1 ... truncated to max_len, int64 ids in [0,258]"
 }

@@ -1,46 +1,104 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>FELA Moderator — submit-time gate demo</title>
-  <style>
-    :root { --ink:#0e1b16; --muted:#5d6b64; --accent:#0fa968; --danger:#d8433c; --hair:#e4eae6; --panel:#fff; --ground:#fbfcfc; }
-    @media (prefers-color-scheme: dark){ :root{ --ink:#e9f1ec; --muted:#8c9a92; --accent:#2fd588; --danger:#f0655e; --hair:#24322b; --panel:#141d19; --ground:#0e1512; } }
-    body { font: 16px/1.55 system-ui, sans-serif; color: var(--ink); background: var(--ground); max-width: 42rem; margin: 0 auto; padding: 3rem 1.25rem; }
-    h1 { font-weight: 800; letter-spacing: -.02em; }
-    p.lede { color: var(--muted); }
-    .row { display: flex; gap: .75rem; align-items: center; margin-top: 1rem; }
-    button#save { font: 600 1rem system-ui; padding: .6rem 1.1rem; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
-    button#save:disabled { background: transparent; color: var(--danger); border-color: var(--danger); cursor: not-allowed; }
-    code { font-family: ui-monospace, Menlo, monospace; background: var(--panel); border: 1px solid var(--hair); padding: .1rem .3rem; border-radius: 4px; }
-  </style>
-</head>
-<body>
-  <h1>Content gate, client-side</h1>
-  <p class="lede">A <code>&lt;fela-moderated-input&gt;</code> that won't let a user submit PII or obscenity.
-     Structured PII (email/phone/SSN/card) is caught live by regex; attach the 13&nbsp;MB neural model
-     (<code>el.moderator = …</code>) for obscenity + name/address detection. Nothing leaves the page.</p>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FELA Moderator — submit-time gate demo</title>
+    <style>
+      :root {
+        --ink: #0e1b16;
+        --muted: #5d6b64;
+        --accent: #0fa968;
+        --danger: #d8433c;
+        --hair: #e4eae6;
+        --panel: #fff;
+        --ground: #fbfcfc;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --ink: #e9f1ec;
+          --muted: #8c9a92;
+          --accent: #2fd588;
+          --danger: #f0655e;
+          --hair: #24322b;
+          --panel: #141d19;
+          --ground: #0e1512;
+        }
+      }
+      body {
+        font:
+          16px/1.55 system-ui,
+          sans-serif;
+        color: var(--ink);
+        background: var(--ground);
+        max-width: 42rem;
+        margin: 0 auto;
+        padding: 3rem 1.25rem;
+      }
+      h1 {
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      p.lede {
+        color: var(--muted);
+      }
+      .row {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        margin-top: 1rem;
+      }
+      button#save {
+        font: 600 1rem system-ui;
+        padding: 0.6rem 1.1rem;
+        border-radius: 8px;
+        border: 1px solid var(--accent);
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+      }
+      button#save:disabled {
+        background: transparent;
+        color: var(--danger);
+        border-color: var(--danger);
+        cursor: not-allowed;
+      }
+      code {
+        font-family: ui-monospace, Menlo, monospace;
+        background: var(--panel);
+        border: 1px solid var(--hair);
+        padding: 0.1rem 0.3rem;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Content gate, client-side</h1>
+    <p class="lede">
+      A <code>&lt;fela-moderated-input&gt;</code> that won't let a user submit PII or obscenity. Structured PII
+      (email/phone/SSN/card) is caught live by regex; attach the 13&nbsp;MB neural model (<code>el.moderator = …</code>)
+      for obscenity + name/address detection. Nothing leaves the page.
+    </p>
 
-  <fela-moderated-input placeholder="Try: email me at jane@example.com or 415-555-0199"></fela-moderated-input>
+    <fela-moderated-input placeholder="Try: email me at jane@example.com or 415-555-0199"></fela-moderated-input>
 
-  <div class="row">
-    <button id="save">Save to backend</button>
-    <span id="hint" style="color:var(--muted);font-size:.9rem"></span>
-  </div>
+    <div class="row">
+      <button id="save">Save to backend</button>
+      <span id="hint" style="color: var(--muted); font-size: 0.9rem"></span>
+    </div>
 
-  <script type="module">
-    import "../web/fela-moderated-input.js";
-    const el = document.querySelector("fela-moderated-input");
-    const save = document.getElementById("save");
-    const hint = document.getElementById("hint");
-    // To add neural toxicity + unstructured PII, load the model once (onnxruntime-web / tflite-web)
-    // and set: el.moderator = async (text) => runModel(text);  // returns {toxicity, pii}
-    el.addEventListener("gate", (e) => {
-      save.disabled = e.detail.blocked;
-      save.textContent = e.detail.blocked ? "🚫 Blocked" : "Save to backend";
-      hint.textContent = e.detail.blocked ? e.detail.reasons.join("; ") : "";
-    });
-  </script>
-</body>
+    <script type="module">
+      import "../web/fela-moderated-input.js";
+      const el = document.querySelector("fela-moderated-input");
+      const save = document.getElementById("save");
+      const hint = document.getElementById("hint");
+      // To add neural toxicity + unstructured PII, load the model once (onnxruntime-web / tflite-web)
+      // and set: el.moderator = async (text) => runModel(text);  // returns {toxicity, pii}
+      el.addEventListener("gate", (e) => {
+        save.disabled = e.detail.blocked;
+        save.textContent = e.detail.blocked ? "🚫 Blocked" : "Save to backend";
+        hint.textContent = e.detail.blocked ? e.detail.reasons.join("; ") : "";
+      });
+    </script>
+  </body>
 </html>

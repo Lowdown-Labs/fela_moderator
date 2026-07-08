@@ -2,11 +2,19 @@
 import { DEFAULT_HEADS, resolveHeads, enabledDetectors, CATEGORY_HEAD } from "./heads.mjs";
 
 let fails = 0;
-const ok = (c, m) => { if (!c) { console.error("FAIL " + m); fails++; } else console.log("ok   " + m); };
+const ok = (c, m) => {
+  if (!c) {
+    console.error("FAIL " + m);
+    fails++;
+  } else console.log("ok   " + m);
+};
 
 ok(DEFAULT_HEADS.jigsaw.enabled === true, "jigsaw on by default");
 ok(DEFAULT_HEADS.taxonomy.enabled === false, "taxonomy off (weaker/license-gated)");
-ok(DEFAULT_HEADS.jailbreak.enabled === false && DEFAULT_HEADS.nsfw.enabled === false, "V2 heads pre-registered but off");
+ok(
+  DEFAULT_HEADS.jailbreak.enabled === false && DEFAULT_HEADS.nsfw.enabled === false,
+  "V2 heads pre-registered but off",
+);
 
 const h = resolveHeads({ profanity: { enabled: false } });
 ok(h.profanity.enabled === false && h.pii_rules.enabled === true, "override merges per-head");

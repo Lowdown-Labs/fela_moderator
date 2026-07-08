@@ -2,7 +2,12 @@
 import { check, redactText, maskValue, DEFAULT_POLICY } from "./validate.mjs";
 
 let fails = 0;
-const ok = (c, m) => { if (!c) { console.error("FAIL " + m); fails++; } else console.log("ok   " + m); };
+const ok = (c, m) => {
+  if (!c) {
+    console.error("FAIL " + m);
+    fails++;
+  } else console.log("ok   " + m);
+};
 
 // default policy blocks both
 ok(DEFAULT_POLICY.pii === "block" && DEFAULT_POLICY.toxicity === "block", "default blocks both");
@@ -10,7 +15,10 @@ ok(DEFAULT_POLICY.pii === "block" && DEFAULT_POLICY.toxicity === "block", "defau
 // regex PII -> a pii/block finding
 const g1 = check("email me at joe@example.com");
 ok(g1.blocked, "email -> blocked by default");
-ok(g1.findings.some((f) => f.category === "pii" && f.type === "EMAIL" && f.severity === "block" && f.source === "regex"), "email finding shape");
+ok(
+  g1.findings.some((f) => f.category === "pii" && f.type === "EMAIL" && f.severity === "block" && f.source === "regex"),
+  "email finding shape",
+);
 
 // pii:"warn" -> warned, not blocked
 const g2 = check("call 415-555-0199", { policy: { pii: "warn", toxicity: "block" } });
@@ -20,7 +28,10 @@ ok(g2.findings[0].severity === "warn", "finding severity follows policy");
 // pii:"off" -> finding still emitted, not blocked/warned
 const g3 = check("call 415-555-0199", { policy: { pii: "off", toxicity: "block" } });
 ok(!g3.blocked && !g3.warned, "pii off -> silent");
-ok(g3.findings.some((f) => f.type === "PHONE" && f.severity === "off"), "off findings still emitted");
+ok(
+  g3.findings.some((f) => f.type === "PHONE" && f.severity === "off"),
+  "off findings still emitted",
+);
 
 // neural: toxicity + unstructured PII; structured model entities dropped
 const neural = {
@@ -31,10 +42,19 @@ const neural = {
   ],
 };
 const g4 = check("Jane x@y.com hi", { neural });
-ok(g4.findings.some((f) => f.category === "toxicity" && f.type === "obscene" && f.start === -1), "toxicity finding shape");
-ok(g4.findings.some((f) => f.type === "FIRSTNAME" && f.source === "model"), "model owns FIRSTNAME");
+ok(
+  g4.findings.some((f) => f.category === "toxicity" && f.type === "obscene" && f.start === -1),
+  "toxicity finding shape",
+);
+ok(
+  g4.findings.some((f) => f.type === "FIRSTNAME" && f.source === "model"),
+  "model owns FIRSTNAME",
+);
 ok(!g4.findings.some((f) => f.type === "EMAIL" && f.source === "model"), "model EMAIL dropped");
-ok(g4.findings.some((f) => f.type === "EMAIL" && f.source === "regex"), "regex still catches email");
+ok(
+  g4.findings.some((f) => f.type === "EMAIL" && f.source === "regex"),
+  "regex still catches email",
+);
 
 // toxicity:"off" silences toxicity but PII still blocks
 const g5 = check("Jane x@y.com hi", { neural, policy: { pii: "block", toxicity: "off" } });

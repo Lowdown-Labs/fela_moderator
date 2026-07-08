@@ -3,9 +3,22 @@ import { explain, explainReason } from "./explain.mjs";
 import { moderate } from "./engine.mjs";
 
 let fails = 0;
-const ok = (c, m) => { if (!c) { console.error("FAIL " + m); fails++; } else console.log("ok   " + m); };
+const ok = (c, m) => {
+  if (!c) {
+    console.error("FAIL " + m);
+    fails++;
+  } else console.log("ok   " + m);
+};
 
-const s = explainReason({ source: "wordlist", detector: "naughty-words:pt", label: "slur", span: [12, 18], matched: "xxx", score: 1, language: "pt" });
+const s = explainReason({
+  source: "wordlist",
+  detector: "naughty-words:pt",
+  label: "slur",
+  span: [12, 18],
+  matched: "xxx",
+  score: 1,
+  language: "pt",
+});
 ok(s.includes("slur") && s.includes("wordlist") && s.includes("pt"), "reason mentions label/source/language");
 ok(s.includes("12") && s.includes("18"), "reason mentions the char span");
 

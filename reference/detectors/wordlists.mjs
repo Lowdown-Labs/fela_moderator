@@ -22,7 +22,16 @@ export function detect(text, { langs = DEFAULT_LANGS } = {}) {
     const re = langRe(lang);
     if (!re) continue;
     for (const m of text.matchAll(re)) {
-      flags.push({ source: "wordlist", detector: "naughty-words:" + lang, label: "slur", span: [m.index, m.index + m[0].length], matched: m[0], score: 1, category: "profanity", language: lang });
+      flags.push({
+        source: "wordlist",
+        detector: "naughty-words:" + lang,
+        label: "slur",
+        span: [m.index, m.index + m[0].length],
+        matched: m[0],
+        score: 1,
+        category: "profanity",
+        language: lang,
+      });
     }
   }
   return flags;

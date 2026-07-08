@@ -1,17 +1,92 @@
-.fela-root { --fela-block: #b3261e; --fela-warn: #f59e0b; --fela-radius: 8px; --fela-font: inherit; display: block; }
-.fela-field { position: relative; }
-.fela-backdrop, .fela-input { font: var(--fela-font); padding: .5rem; white-space: pre-wrap; word-wrap: break-word; box-sizing: border-box; width: 100%; min-height: 5rem; border-radius: var(--fela-radius); }
-.fela-input { display: block; }
-.fela-field .fela-input { position: relative; background: transparent; }
-.fela-input[data-blocked="true"] { outline: 2px solid var(--fela-block); }
-.fela-backdrop { position: absolute; inset: 0; color: transparent; pointer-events: none; overflow: hidden; }
-.fela-backdrop mark { background: color-mix(in srgb, var(--fela-block) 22%, transparent); border-radius: 3px; color: transparent; }
-.fela-backdrop mark[data-severity="warn"] { background: color-mix(in srgb, var(--fela-warn) 28%, transparent); }
-.fela-banner { margin: .25rem 0 0; }
-.fela-banner[data-severity="block"] { color: var(--fela-block); }
-.fela-banner[data-severity="warn"] { color: var(--fela-warn); }
-.fela-badge { position: relative; display: inline-flex; align-items: center; gap: .25rem; font: var(--fela-font); font-size: .85em; padding: .1rem .5rem; border-radius: 999px; cursor: default; }
-.fela-badge[data-flagged="true"] { color: var(--fela-block); background: color-mix(in srgb, var(--fela-block) 12%, transparent); }
-.fela-badge[data-flagged="false"] { color: #16794a; background: color-mix(in srgb, #16794a 12%, transparent); }
-.fela-badge-tip { position: absolute; top: 100%; left: 0; margin: .25rem 0 0; padding: .4rem .6rem; list-style: none; background: #111; color: #fff; border-radius: 6px; font-size: .8em; max-width: 24rem; z-index: 10; }
-.fela-badge-tip li { margin: .15rem 0; white-space: normal; }
+.fela-root {
+  --fela-block: #b3261e;
+  --fela-warn: #f59e0b;
+  --fela-radius: 8px;
+  --fela-font: inherit;
+  display: block;
+}
+.fela-field {
+  position: relative;
+}
+.fela-backdrop,
+.fela-input {
+  font: var(--fela-font);
+  padding: 0.5rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 5rem;
+  border-radius: var(--fela-radius);
+}
+.fela-input {
+  display: block;
+}
+.fela-field .fela-input {
+  position: relative;
+  background: transparent;
+}
+.fela-input[data-blocked="true"] {
+  outline: 2px solid var(--fela-block);
+}
+.fela-backdrop {
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  pointer-events: none;
+  overflow: hidden;
+}
+.fela-backdrop mark {
+  background: color-mix(in srgb, var(--fela-block) 22%, transparent);
+  border-radius: 3px;
+  color: transparent;
+}
+.fela-backdrop mark[data-severity="warn"] {
+  background: color-mix(in srgb, var(--fela-warn) 28%, transparent);
+}
+.fela-banner {
+  margin: 0.25rem 0 0;
+}
+.fela-banner[data-severity="block"] {
+  color: var(--fela-block);
+}
+.fela-banner[data-severity="warn"] {
+  color: var(--fela-warn);
+}
+.fela-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font: var(--fela-font);
+  font-size: 0.85em;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  cursor: default;
+}
+.fela-badge[data-flagged="true"] {
+  color: var(--fela-block);
+  background: color-mix(in srgb, var(--fela-block) 12%, transparent);
+}
+.fela-badge[data-flagged="false"] {
+  color: #16794a;
+  background: color-mix(in srgb, #16794a 12%, transparent);
+}
+.fela-badge-tip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: 0.25rem 0 0;
+  padding: 0.4rem 0.6rem;
+  list-style: none;
+  background: #111;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 0.8em;
+  max-width: 24rem;
+  z-index: 10;
+}
+.fela-badge-tip li {
+  margin: 0.15rem 0;
+  white-space: normal;
+}

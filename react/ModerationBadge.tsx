@@ -20,7 +20,9 @@ export function ModerationBadge({ result, className }: ModerationBadgeProps) {
       data-flagged={result.flagged}
       tabIndex={0}
       role="button"
-      aria-label={result.flagged ? `Moderation: ${count} reason${count === 1 ? "" : "s"}. Focus to see why.` : "Moderation: clean"}
+      aria-label={
+        result.flagged ? `Moderation: ${count} reason${count === 1 ? "" : "s"}. Focus to see why.` : "Moderation: clean"
+      }
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
       onFocus={() => setOpen(true)}
@@ -29,7 +31,9 @@ export function ModerationBadge({ result, className }: ModerationBadgeProps) {
       {result.flagged ? `⚠ ${count} reason${count === 1 ? "" : "s"}` : "✓ clean"}
       {show && (
         <ul className="fela-badge-tip" part="badge-tip" role="tooltip">
-          {result.reasons.map((r, i) => <li key={i}>{explainReason(r)}</li>)}
+          {result.reasons.map((r, i) => (
+            <li key={i}>{explainReason(r)}</li>
+          ))}
         </ul>
       )}
     </span>

@@ -21,19 +21,27 @@ const CLUSTER = /\P{M}\p{M}*|\p{M}+/gu; // a base char + trailing combining mark
 export function normalize(text, { lowercase = false } = {}) {
   let normalized = "";
   const srcStart = []; // per normalized UTF-16 unit: original start index
-  const srcEnd = [];   // per normalized UTF-16 unit: original end index (exclusive)
+  const srcEnd = []; // per normalized UTF-16 unit: original end index (exclusive)
   for (const m of text.matchAll(CLUSTER)) {
-    const units = m[0].length;             // UTF-16 units in this original cluster
-    let mapped = skeleton(m[0]);           // per-cluster normalization composes base+marks
+    const units = m[0].length; // UTF-16 units in this original cluster
+    let mapped = skeleton(m[0]); // per-cluster normalization composes base+marks
     if (lowercase) mapped = mapped.toLowerCase();
-    for (let k = 0; k < mapped.length; k++) { srcStart.push(m.index); srcEnd.push(m.index + units); }
+    for (let k = 0; k < mapped.length; k++) {
+      srcStart.push(m.index);
+      srcEnd.push(m.index + units);
+    }
     normalized += mapped;
   }
   const map = {
-    srcStart, srcEnd,
+    srcStart,
+    srcEnd,
     toOriginal(nStart, nEnd) {
-      if (nEnd <= nStart) { const p = srcStart[nStart] ?? text.length; return [p, p]; }
-      let s = Infinity, e = -Infinity;
+      if (nEnd <= nStart) {
+        const p = srcStart[nStart] ?? text.length;
+        return [p, p];
+      }
+      let s = Infinity,
+        e = -Infinity;
       for (let i = nStart; i < nEnd; i++) {
         if (srcStart[i] < s) s = srcStart[i];
         if (srcEnd[i] > e) e = srcEnd[i];

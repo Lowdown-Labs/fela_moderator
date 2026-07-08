@@ -9,7 +9,7 @@ on:
     types: [model-updated]
   workflow_dispatch:
   schedule:
-    - cron: "30 */6 * * *"     # 30 min after the convertor's poll
+    - cron: "30 */6 * * *" # 30 min after the convertor's poll
 
 concurrency:
   group: sync-model
@@ -22,7 +22,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     permissions:
-      contents: write            # commit + tag back to this repo (uses GITHUB_TOKEN)
+      contents: write # commit + tag back to this repo (uses GITHUB_TOKEN)
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,7 +34,7 @@ jobs:
 
       - name: Fetch latest ondevice artifacts from HF
         env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}       # read access to the (private) model repo
+          HF_TOKEN: ${{ secrets.HF_TOKEN }} # read access to the (private) model repo
         run: |
           python - <<'PY'
           import os, shutil

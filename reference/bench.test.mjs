@@ -2,7 +2,12 @@
 import { runBench } from "./bench.mjs";
 
 let fails = 0;
-const ok = (c, m) => { if (!c) { console.error("FAIL " + m); fails++; } else console.log("ok   " + m); };
+const ok = (c, m) => {
+  if (!c) {
+    console.error("FAIL " + m);
+    fails++;
+  } else console.log("ok   " + m);
+};
 
 const report = runBench({ iterations: 20 });
 ok(report.tools.validator && typeof report.tools.validator.p50 === "number", "per-tool p50 present");
