@@ -29,11 +29,11 @@ const [es, ee] = emoji.map.toOriginal(eStart, eStart + 2); // emoji is 2 UTF-16 
 ok("x😀y".slice(es, ee) === "😀", "astral char maps whole");
 
 // NFD / combining marks compose under whole-string NFKC semantics; the map covers base+mark
-const nfd = "élite";                        // decomposed "élite"
+const nfd = "élite";                        // genuinely decomposed: base e + combining acute U+0301
 const cm = normalize(nfd);
-ok(cm.normalized === "élite".normalize("NFKC"), "NFD combining mark composes");
+ok(cm.normalized === nfd.normalize("NFKC") && cm.normalized.length === 5, "NFD combining mark composes to 5-unit form");
 const [cs, ce] = cm.map.toOriginal(0, 1);         // the composed é
-ok(nfd.slice(cs, ce) === "é", "composed char maps to base+mark in original");
+ok(nfd.slice(cs, ce) === "é", "composed char maps to base+mark (2 units) in original");
 
 console.log(fails ? `\n${fails} FAILED` : "\nALL PASS");
 process.exit(fails ? 1 : 0);
