@@ -5,7 +5,8 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./react/test-setup.ts"],
     globals: true,
-    // reference/validate.test.mjs is a standalone node script (calls process.exit); it runs via `node` in `npm test`.
-    exclude: [...configDefaults.exclude, "reference/validate.test.mjs"],
+    // reference/**/*.test.mjs are standalone node scripts (ok() harness + process.exit); they run via
+    // `node`/`npm run test:detectors` in `npm test`, not under vitest. Vitest owns the react/web/bin suites.
+    exclude: [...configDefaults.exclude, "reference/**/*.test.mjs"],
   },
 });
