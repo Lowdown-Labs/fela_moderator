@@ -56,3 +56,7 @@ export function check(text, { neural = null, policy = DEFAULT_POLICY } = {}) {
   const warned = findings.some((f) => f.severity === "warn");
   return { findings, blocked, warned };
 }
+
+export { moderate, moderateAsync } from "./engine.mjs";
+export { explain, explainReason } from "./explain.mjs";
+export { moderationSchema, zodRefine } from "./schema.mjs";

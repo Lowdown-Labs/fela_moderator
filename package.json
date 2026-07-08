@@ -8,7 +8,8 @@
   "scripts": {
     "test": "npm run test:reference && vitest run",
     "test:detectors": "node reference/normalize.test.mjs && node reference/detectors/validator.test.mjs && node reference/detectors/phone.test.mjs && node reference/detectors/ipaddr.test.mjs && node reference/detectors/presidio.test.mjs && node reference/detectors/profanity.test.mjs && node reference/detectors/wordlists.test.mjs && node reference/detectors/spam.test.mjs && node reference/detectors/index.test.mjs",
-    "test:reference": "npm run test:detectors && node reference/heads.test.mjs && node reference/engine.test.mjs && node reference/explain.test.mjs && node reference/schema.test.mjs && node reference/validate.test.mjs"
+    "test:reference": "npm run test:detectors && node reference/heads.test.mjs && node reference/engine.test.mjs && node reference/explain.test.mjs && node reference/schema.test.mjs && node reference/bench.test.mjs && node reference/validate.test.mjs",
+    "bench": "node reference/bench.mjs"
   },
   "bin": {
     "moderate": "./bin/moderate.mjs"
@@ -17,6 +18,9 @@
     ".": "./reference/validate.mjs",
     "./gate": "./reference/validate.mjs",
     "./moderate": "./reference/moderate.mjs",
+    "./engine": "./reference/engine.mjs",
+    "./schema": "./reference/schema.mjs",
+    "./explain": "./reference/explain.mjs",
     "./checkers": "./reference/checkers.mjs",
     "./model/runner.mjs": "./model/runner.mjs",
     "./react": "./react/index.ts",
@@ -26,6 +30,7 @@
   "files": [
     "reference/*.mjs",
     "reference/*.d.ts",
+    "reference/detectors/*.mjs",
     "model/runner.mjs",
     "react/**",
     "web/*.js",
