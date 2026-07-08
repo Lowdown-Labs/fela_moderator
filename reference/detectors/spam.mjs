@@ -10,8 +10,26 @@ const esc = (w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 export function detect(text, { config = DEFAULT_CONFIG } = {}) {
   const flags = [];
   const shRe = new RegExp("\\b(?:" + config.shorteners.map(esc).join("|") + ")\\/\\S+", "gi");
-  for (const m of text.matchAll(shRe)) flags.push({ source: "rule", detector: "spam.shortener", label: "SHORTENER", span: [m.index, m.index + m[0].length], matched: m[0], score: 1, category: "spam" });
+  for (const m of text.matchAll(shRe))
+    flags.push({
+      source: "rule",
+      detector: "spam.shortener",
+      label: "SHORTENER",
+      span: [m.index, m.index + m[0].length],
+      matched: m[0],
+      score: 1,
+      category: "spam",
+    });
   const kwRe = new RegExp("\\b(" + config.keywords.map(esc).join("|") + ")\\b", "gi");
-  for (const m of text.matchAll(kwRe)) flags.push({ source: "rule", detector: "spam.keyword", label: "SCAM_KEYWORD", span: [m.index, m.index + m[0].length], matched: m[0], score: 1, category: "spam" });
+  for (const m of text.matchAll(kwRe))
+    flags.push({
+      source: "rule",
+      detector: "spam.keyword",
+      label: "SCAM_KEYWORD",
+      span: [m.index, m.index + m[0].length],
+      matched: m[0],
+      score: 1,
+      category: "spam",
+    });
   return flags;
 }

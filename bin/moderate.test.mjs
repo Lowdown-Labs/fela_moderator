@@ -5,12 +5,16 @@ import { join } from "node:path";
 import { ejectComponent, components } from "./registry.mjs";
 
 let dir;
-beforeEach(() => { dir = mkdtempSync(join(tmpdir(), "fela-")); });
+beforeEach(() => {
+  dir = mkdtempSync(join(tmpdir(), "fela-"));
+});
 afterEach(() => rmSync(dir, { recursive: true, force: true }));
 
 describe("eject", () => {
   it("registry lists moderated-textarea with its files", () => {
-    expect(components["moderated-textarea"]).toEqual(expect.arrayContaining(["react/ModeratedTextarea.tsx", "react/useModeration.ts"]));
+    expect(components["moderated-textarea"]).toEqual(
+      expect.arrayContaining(["react/ModeratedTextarea.tsx", "react/useModeration.ts"]),
+    );
   });
 
   it("copies files and rewrites the package import", () => {

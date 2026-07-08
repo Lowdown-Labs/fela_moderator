@@ -1,0 +1,41 @@
+name: release
+
+# Manual, gated publish with npm provenance (OIDC). DOUBLE-INERT until you consciously enable it:
+#   1. remove `"private": true` from package.json, and
+#   2. add an `NPM_TOKEN` repository secret (an npm automation token).
+# Until BOTH are done, this cannot publish. It also never auto-fires — `workflow_dispatch` only.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # version commit/tag
+      id-token: write # npm provenance via OIDC
+      pull-requests: write # changesets version PR
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+      - name: Version or publish (Changesets)
+        uses: changesets/action@v1
+        with:
+          version: npm run version-packages
+          publish: npm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -7,8 +7,21 @@ const V6 = /\b(?:[A-F0-9]{0,4}:){2,7}[A-F0-9]{0,4}\b/gi;
 function push(flags, label, val, index) {
   if (!ipaddr.isValid(val)) return;
   let range = "unicast";
-  try { range = ipaddr.parse(val).range(); } catch { return; }
-  flags.push({ source: "rule", detector: "ipaddr", label, span: [index, index + val.length], matched: val, score: 1, category: "pii", range });
+  try {
+    range = ipaddr.parse(val).range();
+  } catch {
+    return;
+  }
+  flags.push({
+    source: "rule",
+    detector: "ipaddr",
+    label,
+    span: [index, index + val.length],
+    matched: val,
+    score: 1,
+    category: "pii",
+    range,
+  });
 }
 
 /** @returns {Array<{source:"rule",detector:"ipaddr",label:"IPV4"|"IPV6",span:[number,number],matched:string,score:1,category:"pii",range:string}>} */

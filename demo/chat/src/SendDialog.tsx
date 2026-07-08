@@ -1,8 +1,12 @@
 import type { Finding, Decision } from "@lowdown/moderate/react";
 
 const LABEL: Record<string, string> = {
-  PHONE: "a phone number", EMAIL: "an email address", SSN: "a social security number",
-  CREDITCARD: "a card number", IP: "an IP address", URL: "a link",
+  PHONE: "a phone number",
+  EMAIL: "an email address",
+  SSN: "a social security number",
+  CREDITCARD: "a card number",
+  IP: "an IP address",
+  URL: "a link",
 };
 const friendly = (type: string) => LABEL[type] ?? type.toLowerCase();
 
@@ -16,13 +20,22 @@ export function SendDialog({ findings, onDecide }: { findings: Finding[]; onDeci
           We spotted {types.join(", ")} in your message. Sharing it here could put you at risk.
         </p>
         <div className="mt-4 flex flex-col gap-2">
-          <button onClick={() => onDecide("redact")} className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800">
+          <button
+            onClick={() => onDecide("redact")}
+            className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800"
+          >
             Redact &amp; send
           </button>
-          <button onClick={() => onDecide("send")} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+          <button
+            onClick={() => onDecide("send")}
+            className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
             Send anyway
           </button>
-          <button onClick={() => onDecide("block")} className="rounded-lg px-3 py-2 text-sm font-medium text-slate-400 hover:text-slate-600">
+          <button
+            onClick={() => onDecide("block")}
+            className="rounded-lg px-3 py-2 text-sm font-medium text-slate-400 hover:text-slate-600"
+          >
             Cancel
           </button>
         </div>

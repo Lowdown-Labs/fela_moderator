@@ -1,10 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import "./fela-moderated-input.js";
 
-const mount = () => { const el = document.createElement("fela-moderated-input"); document.body.appendChild(el); return el; };
+const mount = () => {
+  const el = document.createElement("fela-moderated-input");
+  document.body.appendChild(el);
+  return el;
+};
 
 describe("<fela-moderated-input>", () => {
-  beforeEach(() => { document.body.innerHTML = ""; });
+  beforeEach(() => {
+    document.body.innerHTML = "";
+  });
 
   it("emits flagged with findings on PII input", async () => {
     const el = mount();
@@ -26,7 +32,9 @@ describe("<fela-moderated-input>", () => {
     const el = mount();
     el.setAttribute("debounce", "0");
     let detail;
-    el.addEventListener("flagged", (e) => { detail = e.detail; });
+    el.addEventListener("flagged", (e) => {
+      detail = e.detail;
+    });
     const ta = el.querySelector("textarea");
     ta.value = "call 415-555-0199 now";
     ta.dispatchEvent(new Event("input"));

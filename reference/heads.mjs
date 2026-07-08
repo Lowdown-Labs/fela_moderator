@@ -3,20 +3,28 @@
 // disabled so they slot in with a single `enabled: true` once they pass the eval gate — no code change.
 export const DEFAULT_HEADS = {
   // model heads
-  jigsaw:          { kind: "model", enabled: true,  threshold: null }, // per-label thresholds from config.json
-  taxonomy:        { kind: "model", enabled: false, threshold: 0.5 },  // weaker (val AUROC ~0.93), license-gated
-  pii_model:       { kind: "model", enabled: true,  threshold: null }, // unstructured PII (names/addresses)
-  spam_ml:         { kind: "model", enabled: false, threshold: 0.5 },
-  jailbreak:       { kind: "model", enabled: false, threshold: 0.5 },
-  nsfw:            { kind: "model", enabled: false, threshold: 0.5 },
+  jigsaw: { kind: "model", enabled: true, threshold: null }, // per-label thresholds from config.json
+  taxonomy: { kind: "model", enabled: false, threshold: 0.5 }, // weaker (val AUROC ~0.93), license-gated
+  pii_model: { kind: "model", enabled: true, threshold: null }, // unstructured PII (names/addresses)
+  spam_ml: { kind: "model", enabled: false, threshold: 0.5 },
+  jailbreak: { kind: "model", enabled: false, threshold: 0.5 },
+  nsfw: { kind: "model", enabled: false, threshold: 0.5 },
   target_identity: { kind: "model", enabled: false, threshold: 0.5 },
   // rule heads (own the deterministic detectors)
-  pii_rules:       { kind: "rule", enabled: true },
-  profanity:       { kind: "rule", enabled: true },
-  spam:            { kind: "rule", enabled: true },
+  pii_rules: { kind: "rule", enabled: true },
+  profanity: { kind: "rule", enabled: true },
+  spam: { kind: "rule", enabled: true },
 };
 
-const DETECTOR_HEAD = { validator: "pii_rules", phone: "pii_rules", ipaddr: "pii_rules", presidio: "pii_rules", profanity: "profanity", wordlists: "profanity", spam: "spam" };
+const DETECTOR_HEAD = {
+  validator: "pii_rules",
+  phone: "pii_rules",
+  ipaddr: "pii_rules",
+  presidio: "pii_rules",
+  profanity: "profanity",
+  wordlists: "profanity",
+  spam: "spam",
+};
 export const CATEGORY_HEAD = { pii: "pii_rules", profanity: "profanity", spam: "spam" };
 export const SCALAR_HEADS = ["spam_ml", "jailbreak", "nsfw", "target_identity"];
 

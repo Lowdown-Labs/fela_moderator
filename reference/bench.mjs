@@ -22,7 +22,11 @@ function stats(times) {
 
 function time(fn, iterations) {
   const times = [];
-  for (let i = 0; i < iterations; i++) { const t0 = performance.now(); for (const c of CORPUS) fn(c); times.push((performance.now() - t0) / CORPUS.length); }
+  for (let i = 0; i < iterations; i++) {
+    const t0 = performance.now();
+    for (const c of CORPUS) fn(c);
+    times.push((performance.now() - t0) / CORPUS.length);
+  }
   return stats(times);
 }
 
@@ -41,7 +45,8 @@ export function runBench({ iterations = 200 } = {}) {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const r = runBench();
   console.log("tool           p50(ms)  p95(ms)");
-  for (const [name, s] of Object.entries(r.tools)) console.log(name.padEnd(14), String(s.p50).padStart(7), String(s.p95).padStart(8));
+  for (const [name, s] of Object.entries(r.tools))
+    console.log(name.padEnd(14), String(s.p50).padStart(7), String(s.p95).padStart(8));
   console.log("normalize".padEnd(14), String(r.normalize.p50).padStart(7), String(r.normalize.p95).padStart(8));
   console.log("moderate".padEnd(14), String(r.moderate.p50).padStart(7), String(r.moderate.p95).padStart(8));
 }

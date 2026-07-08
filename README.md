@@ -4,6 +4,12 @@
 
 ### The submit-time content gate that keeps PII & toxicity off your backend.
 
+[![CI](https://github.com/Lowdown-Labs/fela_moderator/actions/workflows/ci.yml/badge.svg)](https://github.com/Lowdown-Labs/fela_moderator/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Lowdown-Labs/fela_moderator/badge)](https://scorecard.dev/viewer/?uri=github.com/Lowdown-Labs/fela_moderator)
+[![npm](https://img.shields.io/npm/v/@lowdown/moderate?logo=npm)](https://www.npmjs.com/package/@lowdown/moderate)
+[![deps: MIT-clean](https://img.shields.io/badge/deps-MIT--clean-brightgreen)](./LICENSES.md)
+[![npm provenance](https://img.shields.io/badge/npm-provenance-blue?logo=npm)](https://docs.npmjs.com/generating-provenance-statements)
+
 **One install. Two knobs. Zero data leaves the device.** 📵
 
 `pii` and `toxicity`, each `block · warn · off` — default **block**. So nothing you don't want
@@ -218,6 +224,15 @@ is non-commercial-gated — **retrain PII on a permissive source before commerci
 
 All added detector dependencies are MIT/permissive (see `LICENSES.md`); multilingual word lists are
 CC-BY-4.0 (attributed there). No network calls — text never leaves the device.
+
+## 🔒 Quality & trust
+
+Every push and PR runs the full suite on **Linux · macOS · Windows** across **Node 18/20/22**, plus
+ESLint + Prettier, a typecheck, `publint` + `size-limit`, `npm audit`, and a **Semgrep OSS** scan. New
+dependencies are auto-checked against an **MIT/permissive license allowlist**. An **OpenSSF Scorecard**
+runs weekly, Dependabot keeps deps fresh, and releases publish with **npm provenance**. Found a security
+issue? See [`SECURITY.md`](.github/SECURITY.md). Want to contribute? See
+[`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 <div align="center">
 

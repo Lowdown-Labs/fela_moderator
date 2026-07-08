@@ -2,7 +2,12 @@
 import { detect } from "./validator.mjs";
 
 let fails = 0;
-const ok = (c, m) => { if (!c) { console.error("FAIL " + m); fails++; } else console.log("ok   " + m); };
+const ok = (c, m) => {
+  if (!c) {
+    console.error("FAIL " + m);
+    fails++;
+  } else console.log("ok   " + m);
+};
 const has = (fs, label) => fs.find((f) => f.label === label);
 
 const t = "mail joe@example.com see http://x.com card 4111 1111 1111 1111 end";

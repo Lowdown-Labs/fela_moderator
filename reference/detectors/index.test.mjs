@@ -3,7 +3,12 @@ import { detect, DETECTORS } from "./index.mjs";
 import { normalize } from "../normalize.mjs";
 
 let fails = 0;
-const ok = (c, m) => { if (!c) { console.error("FAIL " + m); fails++; } else console.log("ok   " + m); };
+const ok = (c, m) => {
+  if (!c) {
+    console.error("FAIL " + m);
+    fails++;
+  } else console.log("ok   " + m);
+};
 
 // registry holds all seven adapters
 ok(DETECTORS.length === 7, "seven detectors registered");
@@ -26,12 +31,23 @@ const off = detect(t, { enabled: { validator: false } });
 ok(!off.some((f) => f.detector.startsWith("validator")), "disabled detector skipped");
 
 // throw-isolation: a throwing detector is skipped, onError fires with (error, name), others still run
-DETECTORS.push({ name: "boom", detect() { throw new Error("boom"); } });
+DETECTORS.push({
+  name: "boom",
+  detect() {
+    throw new Error("boom");
+  },
+});
 try {
   const errs = [];
   const res = detect("mail joe@example.com", { onError: (e, name) => errs.push([name, e.message]) });
-  ok(errs.some(([n, m]) => n === "boom" && m === "boom"), "onError called with (error, detector name)");
-  ok(res.some((f) => f.label === "EMAIL"), "other detectors still run after one throws");
+  ok(
+    errs.some(([n, m]) => n === "boom" && m === "boom"),
+    "onError called with (error, detector name)",
+  );
+  ok(
+    res.some((f) => f.label === "EMAIL"),
+    "other detectors still run after one throws",
+  );
 } finally {
   DETECTORS.pop(); // restore the registry so other imports are unaffected
 }

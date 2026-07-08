@@ -5,8 +5,7 @@ import "./fela.css";
 
 type Slots = { root?: string; input?: string; banner?: string };
 
-export interface ModeratedTextareaProps
-  extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
+export interface ModeratedTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   policy?: Policy;
@@ -51,23 +50,49 @@ function segments(text: string, findings: Finding[]) {
   return out;
 }
 
-export const ModeratedTextarea = forwardRef<ModeratedTextareaHandle, ModeratedTextareaProps>(function ModeratedTextarea({
-  value, onChange, policy, neural, debounceMs, onBlocked, onWarn, onClean, onError, onFlagged,
-  renderBlocked, renderFinding, highlight = true, classNames = {}, className, ...textareaProps
-}, ref) {
+export const ModeratedTextarea = forwardRef<ModeratedTextareaHandle, ModeratedTextareaProps>(function ModeratedTextarea(
+  {
+    value,
+    onChange,
+    policy,
+    neural,
+    debounceMs,
+    onBlocked,
+    onWarn,
+    onClean,
+    onError,
+    onFlagged,
+    renderBlocked,
+    renderFinding,
+    highlight = true,
+    classNames = {},
+    className,
+    ...textareaProps
+  },
+  ref,
+) {
   const [inner, setInner] = useState("");
   const text = value ?? inner;
-  const { findings, blocked, warned, getInputProps, guardSubmit, redact } =
-    useModeration(text, { policy, neural, debounceMs, onError, onFlagged });
+  const { findings, blocked, warned, getInputProps, guardSubmit, redact } = useModeration(text, {
+    policy,
+    neural,
+    debounceMs,
+    onError,
+    onFlagged,
+  });
 
-  useImperativeHandle(ref, () => ({
-    redact,
-    guardSubmit: async () => {
-      const decision = await guardSubmit();
-      if (decision === "redact" && value === undefined) setInner(redact());
-      return decision;
-    },
-  }), [guardSubmit, redact, value]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      redact,
+      guardSubmit: async () => {
+        const decision = await guardSubmit();
+        if (decision === "redact" && value === undefined) setInner(redact());
+        return decision;
+      },
+    }),
+    [guardSubmit, redact, value],
+  );
 
   // transition-only callbacks
   const prev = useRef<"clean" | "warn" | "block">("clean");
@@ -88,14 +113,23 @@ export const ModeratedTextarea = forwardRef<ModeratedTextareaHandle, ModeratedTe
   const show = blocked || warned;
 
   return (
-    <div className={cx(cx("fela-root", classNames.root), className)} part="root" data-blocked={blocked} data-warned={warned}>
+    <div
+      className={cx(cx("fela-root", classNames.root), className)}
+      part="root"
+      data-blocked={blocked}
+      data-warned={warned}
+    >
       <div className="fela-field">
         {highlight && (
           <div className="fela-backdrop" aria-hidden="true">
             {segments(text, findings).map((s, i) =>
-              s.finding
-                ? <mark key={i} part="finding" data-category={s.finding.category} data-severity={s.finding.severity}>{s.text}</mark>
-                : <span key={i}>{s.text}</span>
+              s.finding ? (
+                <mark key={i} part="finding" data-category={s.finding.category} data-severity={s.finding.severity}>
+                  {s.text}
+                </mark>
+              ) : (
+                <span key={i}>{s.text}</span>
+              ),
             )}
           </div>
         )}
@@ -108,13 +142,21 @@ export const ModeratedTextarea = forwardRef<ModeratedTextareaHandle, ModeratedTe
           onChange={handleChange}
         />
       </div>
-      {show && (renderBlocked ? renderBlocked(findings) : (
-        <p className={cx("fela-banner", classNames.banner)} part="banner" role="alert" data-severity={blocked ? "block" : "warn"}>
-          {renderFinding
-            ? findings.map((f, i) => <span key={i}>{renderFinding(f)}</span>)
-            : `${blocked ? "🚫 Can’t send" : "⚠️ Heads up"} — ${summarize(findings)}`}
-        </p>
-      ))}
+      {show &&
+        (renderBlocked ? (
+          renderBlocked(findings)
+        ) : (
+          <p
+            className={cx("fela-banner", classNames.banner)}
+            part="banner"
+            role="alert"
+            data-severity={blocked ? "block" : "warn"}
+          >
+            {renderFinding
+              ? findings.map((f, i) => <span key={i}>{renderFinding(f)}</span>)
+              : `${blocked ? "🚫 Can’t send" : "⚠️ Heads up"} — ${summarize(findings)}`}
+          </p>
+        ))}
     </div>
   );
 });

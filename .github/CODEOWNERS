@@ -1,0 +1,5 @@
+# Default owners for everything in this repo.
+* @Lowdown-Labs/maintainers
+
+# Core moderation engine + detectors — extra scrutiny.
+/reference/ @Lowdown-Labs/maintainers
