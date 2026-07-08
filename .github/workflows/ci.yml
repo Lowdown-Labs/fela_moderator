@@ -119,5 +119,9 @@ jobs:
       - uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: high
-          # Enforce the SDK's MIT/permissive-only charter on every new dependency.
+          # Enforce the MIT/permissive-only charter on newly-added dependencies. Reliable for DIRECT
+          # deps; transitive coverage is partial without a committed lockfile (see .gitignore). Compound
+          # SPDX like google-libphonenumber's "MIT AND Apache-2.0" needs each term allow-listed (both are).
+          # NOTE: this action has regressed compound-license handling before — bump deliberately via
+          # Dependabot rather than trusting the floating @v4 blindly.
           allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, CC-BY-4.0, 0BSD, Unlicense, BlueOak-1.0.0, Python-2.0

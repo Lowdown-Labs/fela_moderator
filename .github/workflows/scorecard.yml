@@ -32,6 +32,8 @@ jobs:
           name: scorecard-results
           path: results.sarif
           retention-days: 5
+      # Generic SARIF uploader (lives in the codeql-action repo but runs NO CodeQL analysis — it only
+      # posts Scorecard's results to the code-scanning tab). Consistent with the "Semgrep OSS, no CodeQL" charter.
       - uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: results.sarif
