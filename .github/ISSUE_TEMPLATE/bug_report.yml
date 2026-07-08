@@ -1,0 +1,33 @@
+name: Bug report
+description: Something isn't working (a missed/wrong detection, bad span, crash, or hang)
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: The exact input text and the `moderate()` / `check()` call. Redact real PII.
+      render: js
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      placeholder: "@lowdown/moderate@0.1.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: env
+    attributes:
+      label: Environment
+      options: [Node, Browser, React Native, Other]
+    validations:
+      required: true
