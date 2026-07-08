@@ -747,8 +747,8 @@ import { normalize } from "../normalize.mjs";
 let fails = 0;
 const ok = (c, m) => { if (!c) { console.error("FAIL " + m); fails++; } else console.log("ok   " + m); };
 
-// registry holds all eight adapters
-ok(DETECTORS.length === 8, "eight detectors registered");
+// registry holds all seven adapters
+ok(DETECTORS.length === 7, "seven detectors registered");
 
 // without a map: spans are in the passed text's coords
 const t = "mail joe@example.com now";
