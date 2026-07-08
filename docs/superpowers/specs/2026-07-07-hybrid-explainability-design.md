@@ -20,6 +20,9 @@ Turn the FELA moderator into a **hybrid, explainable-by-default** content engine
 
 - **MIT/permissive dependencies only.** Reject GPL/AGPL/CC-BY-NC/OpenRAIL. Each dep vetted in `LICENSES.md`.
 - **Runs in-browser (WASM/bundled) and in Node.** No server round-trip on the core path.
+- **Zero network on the user-data path — a hard invariant.** Every detector is pure/offline: no
+  DNS/MX lookups, no `fetch`, no I/O. Never enable a validator's network options; never add a detector
+  that resolves or reaches out. "Text never leaves the device" must stay literally true.
 - **Tokenizer-free / byte-level.** Never add a tokenizer. The model's "tokenizer" is UTF-8 bytes.
 
 ## Decisions locked in brainstorm
@@ -57,6 +60,7 @@ reference/
   engine.mjs           moderate(text, opts) -> ModerationResult  (the merge pipeline)
   heads.mjs            config-driven head registry (enable flags / thresholds / kinds)
   explain.mjs          explain(result) + explainReason(reason)
+  schema.mjs           moderationSchema()/zodRefine() — Standard Schema + Zod adapters (zero-dep)
   bench.mjs            per-head / per-tool latency micro-benchmark
 LICENSES.md            per-dependency license vetting table
 react/ModerationBadge.tsx   <ModerationBadge result={...}/> — reasons on hover/focus
@@ -230,6 +234,29 @@ reason via `explainReason()`. Accessible (focusable, `role`/`aria`), themed with
 `part`/`data-*`/CSS-custom-property conventions (`react/fela.css`). Exported from `react/index.ts`.
 
 ---
+
+## Validation adapters — plug into the form stack devs already use
+
+Highest-DX surface: make moderation *one rule* in the validation people already run, on web and native,
+with no server. The key move is implementing **[Standard Schema](https://standardschema.dev)** (the
+`~standard` interface jointly authored by Zod / Valibot / ArkType) — which requires **zero dependencies**
+(it is an object shape, not a library), so it drops into all of them at once and keeps the core dep-free.
+
+`reference/schema.mjs` (zero-dep, pure mapping over `moderate()` + `explainReason()`):
+
+- `moderationSchema(opts?) -> StandardSchemaV1` — a `~standard`-compatible validator. `validate(value)`
+  runs `moderate(String(value), opts)`; if `flagged`, returns `{ issues: reasons.map(r => ({ message:
+  explainReason(r) })) }`, else `{ value }`. Works with Zod (`z.string().and()` / pipes), Valibot,
+  ArkType, and any `@hookform/resolvers` Standard-Schema resolver.
+- `zodRefine(opts?) -> (value, ctx) => void` — a `superRefine` callback for people already deep in Zod;
+  emits `ctx.addIssue({ code: "custom", message })` per reason. No `zod` import (uses the string code),
+  so it stays an **optional peer**, never a hard dep.
+- validator.js interop is inherent — we validate structured PII *with* validator.js under the hood, so
+  "if you love validator.js" is already true; documented in the README.
+
+The rejected-field error carries our structured `Reason` straight into the host library's issue/error
+UI — the explainability "why" flows into the form the dev already has. README gets an **"If you love
+Zod / Valibot / ArkType / validator.js…"** section with a copy-paste snippet per stack.
 
 ## `check()` adapter (preserve the DevEx layer)
 
