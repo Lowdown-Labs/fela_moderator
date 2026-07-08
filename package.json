@@ -6,8 +6,9 @@
   "private": true,
   "license": "SEE LICENSE IN ./LICENSE",
   "scripts": {
-    "test": "node reference/validate.test.mjs && vitest run",
-    "test:detectors": "node reference/normalize.test.mjs && node reference/detectors/validator.test.mjs && node reference/detectors/phone.test.mjs && node reference/detectors/ipaddr.test.mjs && node reference/detectors/presidio.test.mjs && node reference/detectors/profanity.test.mjs && node reference/detectors/wordlists.test.mjs && node reference/detectors/spam.test.mjs && node reference/detectors/index.test.mjs"
+    "test": "npm run test:reference && vitest run",
+    "test:detectors": "node reference/normalize.test.mjs && node reference/detectors/validator.test.mjs && node reference/detectors/phone.test.mjs && node reference/detectors/ipaddr.test.mjs && node reference/detectors/presidio.test.mjs && node reference/detectors/profanity.test.mjs && node reference/detectors/wordlists.test.mjs && node reference/detectors/spam.test.mjs && node reference/detectors/index.test.mjs",
+    "test:reference": "npm run test:detectors && node reference/heads.test.mjs && node reference/engine.test.mjs && node reference/explain.test.mjs && node reference/schema.test.mjs && node reference/validate.test.mjs"
   },
   "bin": {
     "moderate": "./bin/moderate.mjs"
