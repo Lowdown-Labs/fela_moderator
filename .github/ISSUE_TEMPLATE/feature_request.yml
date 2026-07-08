@@ -1,0 +1,25 @@
+name: Feature request
+description: Suggest a detector, head, or API improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What are you trying to do that the SDK makes hard today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would you like to see? Keep in mind the SDK stays lean, deterministic, and offline.
+    validations:
+      required: true
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints
+      options:
+        - label: This can be done without network I/O on the user-data path
+        - label: Any new dependency would be MIT/permissive

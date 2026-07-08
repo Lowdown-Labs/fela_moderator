@@ -1,0 +1,12 @@
+node_modules
+package-lock.json
+model
+demo/chat/node_modules
+demo/chat/dist
+**/*.png
+LICENSE
+# Hand-authored prose — keep intact, don't reflow
+*.md
+docs
+SPEC.md
+coverage
