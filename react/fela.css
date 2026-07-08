@@ -10,3 +10,8 @@
 .fela-banner { margin: .25rem 0 0; }
 .fela-banner[data-severity="block"] { color: var(--fela-block); }
 .fela-banner[data-severity="warn"] { color: var(--fela-warn); }
+.fela-badge { position: relative; display: inline-flex; align-items: center; gap: .25rem; font: var(--fela-font); font-size: .85em; padding: .1rem .5rem; border-radius: 999px; cursor: default; }
+.fela-badge[data-flagged="true"] { color: var(--fela-block); background: color-mix(in srgb, var(--fela-block) 12%, transparent); }
+.fela-badge[data-flagged="false"] { color: #16794a; background: color-mix(in srgb, #16794a 12%, transparent); }
+.fela-badge-tip { position: absolute; top: 100%; left: 0; margin: .25rem 0 0; padding: .4rem .6rem; list-style: none; background: #111; color: #fff; border-radius: 6px; font-size: .8em; max-width: 24rem; z-index: 10; }
+.fela-badge-tip li { margin: .15rem 0; white-space: normal; }
