@@ -1,0 +1,10 @@
+FELA Moderator (client-side moderation library)
+Copyright 2026 Lowdown Labs
+
+This product includes software developed at Lowdown Labs
+(dev@gimmelowdown.com).
+
+The source code in this repository is licensed under the Apache License,
+Version 2.0 (see LICENSE). The model weights are served from the Lowdown
+CDN and are also Apache-2.0. We distribute model weights only, never the
+source text they were trained on.

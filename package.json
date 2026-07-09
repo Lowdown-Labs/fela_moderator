@@ -1,0 +1,182 @@
+{
+  "name": "@lowdown-labs/moderate",
+  "version": "0.1.1",
+  "description": "On-device submit-time content gate: flags PII, toxicity, and scams in the browser. Byte-level int8 model, rule gate needs no network.",
+  "type": "module",
+  "private": false,
+  "license": "Apache-2.0",
+  "author": "Lowdown Labs <dev@gimmelowdown.com>",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "test": "npm run test:reference && vitest run",
+    "test:detectors": "node reference/normalize.test.mjs && node reference/detectors/validator.test.mjs && node reference/detectors/phone.test.mjs && node reference/detectors/ipaddr.test.mjs && node reference/detectors/presidio.test.mjs && node reference/detectors/profanity.test.mjs && node reference/detectors/wordlists.test.mjs && node reference/detectors/spam.test.mjs && node reference/detectors/index.test.mjs",
+    "test:reference": "npm run test:detectors && node reference/heads.test.mjs && node reference/engine.test.mjs && node reference/explain.test.mjs && node reference/schema.test.mjs && node reference/bench.test.mjs && node reference/validate.test.mjs",
+    "bench": "node reference/bench.mjs",
+    "build": "tsup",
+    "prepack": "npm run build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc -p tsconfig.json",
+    "coverage": "c8 --reporter=text --reporter=lcov npm run test:reference",
+    "size": "size-limit",
+    "check:package": "publint",
+    "check:types-pkg": "attw --pack . --profile esm-only",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish --provenance"
+  },
+  "bin": {
+    "moderate": "bin/moderate.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./reference/validate.d.mts",
+      "default": "./reference/validate.mjs"
+    },
+    "./gate": {
+      "types": "./reference/validate.d.mts",
+      "default": "./reference/validate.mjs"
+    },
+    "./engine": {
+      "types": "./reference/engine.d.mts",
+      "default": "./reference/engine.mjs"
+    },
+    "./schema": {
+      "types": "./reference/schema.d.mts",
+      "default": "./reference/schema.mjs"
+    },
+    "./explain": {
+      "types": "./reference/explain.d.mts",
+      "default": "./reference/explain.mjs"
+    },
+    "./moderate": {
+      "types": "./reference/moderate.d.mts",
+      "default": "./reference/moderate.mjs"
+    },
+    "./checkers": {
+      "types": "./reference/checkers.d.mts",
+      "default": "./reference/checkers.mjs"
+    },
+    "./model/runner.mjs": {
+      "types": "./model/runner.d.mts",
+      "default": "./model/runner.mjs"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "default": "./dist/react/index.js"
+    },
+    "./web": {
+      "types": "./web/fela-moderated-input.d.ts",
+      "default": "./web/fela-moderated-input.js"
+    },
+    "./config.json": "./config.json"
+  },
+  "files": [
+    "reference/*.mjs",
+    "reference/*.d.ts",
+    "reference/*.d.mts",
+    "reference/detectors/*.mjs",
+    "model/runner.mjs",
+    "model/*.d.mts",
+    "react/**",
+    "web/*.js",
+    "web/*.d.ts",
+    "dist/**",
+    "bin/**",
+    "config.json",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "LICENSES.md",
+    "!**/*.test.*",
+    "!**/*.spec.*",
+    "!**/__tests__/**",
+    "!**/test.mjs",
+    "!**/test-setup.*"
+  ],
+  "keywords": [
+    "moderation",
+    "pii",
+    "toxicity",
+    "on-device",
+    "offline",
+    "byte-level",
+    "react-native",
+    "gate"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lowdown-Labs/fela_moderator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Lowdown-Labs/fela_moderator/issues"
+  },
+  "homepage": "https://github.com/Lowdown-Labs/fela_moderator#readme",
+  "size-limit": [
+    {
+      "name": "SDK source (reference/*.mjs, gzip)",
+      "path": "reference/*.mjs",
+      "gzip": true,
+      "limit": "40 kB"
+    }
+  ],
+  "sideEffects": [
+    "./web/fela-moderated-input.js"
+  ],
+  "peerDependenciesMeta": {
+    "onnxruntime-web": {
+      "optional": true
+    },
+    "onnxruntime-node": {
+      "optional": true
+    },
+    "onnxruntime-react-native": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.4",
+    "@changesets/changelog-github": "^0.7.0",
+    "@changesets/cli": "^2.31.0",
+    "@eslint/js": "^10.0.1",
+    "@size-limit/file": "^12.1.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/react": "^18.3.0",
+    "@vitest/coverage-v8": "^2.1.9",
+    "c8": "^11.0.0",
+    "eslint": "^10.6.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.7.0",
+    "jsdom": "^25.0.0",
+    "onnxruntime-node": "^1.27.0",
+    "prettier": "^3.9.4",
+    "publint": "^0.3.21",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "size-limit": "^12.1.0",
+    "strip-comments": "^2.0.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.63.0",
+    "vitest": "^2.1.0"
+  },
+  "dependencies": {
+    "google-libphonenumber": "^3.2.44",
+    "ipaddr.js": "^2.4.0",
+    "leo-profanity": "^1.9.0",
+    "naughty-words": "^1.2.0",
+    "obscenity": "^0.4.6",
+    "unhomoglyph": "^1.0.6",
+    "validator": "^13.15.35"
+  }
+}

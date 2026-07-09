@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "es2020",
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "skipLibCheck": true,
+    "allowJs": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["react/**/*.ts", "react/**/*.tsx", "reference/*.d.ts", "reference/*.d.mts", "model/*.d.mts"],
+  "exclude": ["node_modules", "demo", "dist", "**/*.test.ts", "**/*.test.tsx"]
+}

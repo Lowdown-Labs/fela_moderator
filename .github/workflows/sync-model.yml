@@ -1,0 +1,69 @@
+name: sync-model-to-cdn
+
+on:
+  repository_dispatch:
+    types: [model-updated]
+  workflow_dispatch:
+  schedule:
+    - cron: "30 */6 * * *"
+
+concurrency:
+  group: sync-model
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  HF_MODEL_REPO: lowdown-labs/fela-moderator
+  AWS_REGION: us-west-2
+  CDN_BUCKET: lowdown-fela-assets
+  CDN_PREFIX: moderator/v1
+  CDN_DISTRIBUTION_ID: E17TE3GT6S8SJ6
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install "huggingface-hub>=0.34"
+      - name: Fetch on-device artifacts from HF
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          mkdir -p out
+          python - <<'PY'
+          import os, shutil
+          from huggingface_hub import hf_hub_download
+          repo, tok = os.environ["HF_MODEL_REPO"], os.environ.get("HF_TOKEN")
+          want = [
+              ("ondevice/moderator_int8.tflite", "out/moderator_int8.tflite"),
+              ("ondevice/moderator.onnx", "out/moderator.onnx"),
+              ("config.json", "out/config.json"),
+          ]
+          for src, dst in want:
+              try:
+                  p = hf_hub_download(repo, src, token=tok)
+                  shutil.copyfile(p, dst)
+                  print("fetched", dst, f"({os.path.getsize(dst) / 1e6:.1f} MB)")
+              except Exception as e:
+                  print("skip", src, "->", str(e)[:120])
+          PY
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Publish to CDN and invalidate
+        run: |
+          set -euo pipefail
+          for f in out/*; do
+            name=$(basename "$f")
+            ct=application/octet-stream
+            case "$name" in *.json) ct=application/json ;; esac
+            aws s3 cp "$f" "s3://${CDN_BUCKET}/${CDN_PREFIX}/${name}" \
+              --content-type "$ct" --cache-control "public, max-age=31536000, immutable"
+          done
+          aws cloudfront create-invalidation --distribution-id "${CDN_DISTRIBUTION_ID}" --paths "/${CDN_PREFIX}/*"

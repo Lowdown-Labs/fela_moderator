@@ -1,0 +1,110 @@
+name: ci
+
+# Test (cross-platform matrix) + lint/format + typecheck + package checks + coverage + security.
+# Read-only token (private repo needs contents:read for checkout); no write scopes anywhere.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (node ${{ matrix.node }} · ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        node: ["18", "20", "22"]
+        include:
+          # byte↔UTF-16 span logic is string-encoding sensitive — prove it on macOS + Windows too
+          - os: macos-latest
+            node: "20"
+          - os: windows-latest
+            node: "20"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install --no-audit --no-fund
+      - run: npm test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+      - run: npm install --no-audit --no-fund
+      - run: npm run lint
+      - run: npm run format:check
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
+
+  package:
+    name: package (publint · size · types)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
+      - run: npm run check:package
+      - run: npm run size
+      - name: types resolution (informational)
+        run: npm run check:types-pkg
+        continue-on-error: true
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+      - run: npm install --no-audit --no-fund
+      - run: npm run coverage
+      - uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage/
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+      - run: npm install --no-audit --no-fund
+      - name: npm audit (prod deps, high+)
+        run: npm audit --omit=dev --audit-level=high
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      # Semgrep OSS (free rulesets, no account). Informational until a .semgrepignore is tuned for the
+      # PII test fixtures (fake SSNs/emails/"PASSWORD" entity labels would trip p/secrets otherwise).
+      - name: Semgrep OSS scan
+        continue-on-error: true
+        run: |
+          pip install semgrep
+          semgrep scan --config p/javascript --config p/security-audit --config p/secrets

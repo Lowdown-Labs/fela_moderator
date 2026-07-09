@@ -1,0 +1,12 @@
+node_modules
+package-lock.json
+dist
+model
+examples/playground/node_modules
+examples/playground/dist
+**/*.png
+LICENSE
+# Hand-authored prose - keep intact, don't reflow
+*.md
+docs
+coverage

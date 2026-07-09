@@ -1,0 +1,4 @@
+{
+  "installDependencies": false,
+  "startCommand": "cd examples/playground && npm install && npm run dev"
+}
