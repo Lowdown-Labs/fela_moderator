@@ -26,6 +26,8 @@ It runs in the browser, in Node, and in React Native, fully offline.
 
 # What it detects and filters
 
+[Screencast_20260709_044557.webm](https://github.com/user-attachments/assets/4e985789-e0a4-47a4-aad2-3f4dc0aa01aa)
+
 **Personal information (PII).** Email addresses, URLs, phone numbers, credit card numbers (Luhn
 checked), and IP addresses (v4 and v6). Government and financial ids: SSN, IBAN, BIC, and Bitcoin and
 Ethereum wallet addresses. Plus free form PII from the model: names, street addresses, and similar
