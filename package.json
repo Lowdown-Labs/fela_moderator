@@ -120,6 +120,10 @@
     "url": "https://github.com/Lowdown-Labs/fela_moderator/issues"
   },
   "homepage": "https://github.com/Lowdown-Labs/fela_moderator#readme",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Lowdown-Labs"
+  },
   "size-limit": [
     {
       "name": "SDK source (reference/*.mjs, gzip)",
