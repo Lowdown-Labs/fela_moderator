@@ -1,6 +1,6 @@
 {
   "name": "@lowdown-labs/moderate",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "On-device submit-time content gate: flags PII, toxicity, and scams in the browser. Byte-level int8 model, rule gate needs no network.",
   "type": "module",
   "private": false,
