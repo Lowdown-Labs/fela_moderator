@@ -10,6 +10,8 @@
 [![node](https://img.shields.io/badge/node-%E2%89%A518-brightgreen?logo=node.js)](package.json)
 [![offline](https://img.shields.io/badge/runs-100%25%20offline-blue)](#quality-and-trust)
 
+Check this out on [HuggingFace](https://huggingface.co/lowdown-labs/fela-moderator)!
+
 **One install, convention over configuration, private fast and on device.**
 
 For instance - set a simple configuration for `pii` and `toxicity` each to `block`, `warn`, or `off`. 
