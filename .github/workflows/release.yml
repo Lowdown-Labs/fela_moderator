@@ -25,6 +25,5 @@ jobs:
       - name: Open version PR (Changesets)
         uses: changesets/action@v2
         with:
-          version: npm run version-packages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          version-script: npm run version-packages
+          github-token: ${{ secrets.GITHUB_TOKEN }}
